@@ -1,0 +1,13 @@
+Build REST APIs using Flask/FastAPI/Django for:
+ • Retrieving all flights
+ • Searching by origin, destination, and date
+2. Implement input validation and sorting (by price or duration)
+3. Simulate external airline schedule APIs
+4. Design dynamic pricing logic considering:
+ • Remaining seat percentage
+ • Time until departure
+ • Simulated demand level
+ • Base fare and pricing tiers
+5. Integrate dynamic pricing engine into flight search API
+6. Build background process to simulate demand/availability changes
+7. (Optional) Store fare history for tracking changes

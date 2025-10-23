@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search Flights</h1>
+<form action="{{ url_for('search') }}" class="search-grid">
+  <div>
+    <label>From</label>
+    <select name="origin">
+      <option value="">Any</option>
+      {% for o in origins %}
+      <option value="{{o}}" {% if q.origin == o %}selected{% endif %}>{{o}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>To</label>
+    <select name="destination">
+      <option value="">Any</option>
+      {% for d in destinations %}
+      <option value="{{d}}" {% if q.destination == d %}selected{% endif %}>{{d}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <label>Date</label>
+    <input type="date" name="date" value="{{ q.date }}">
+  </div>
+  <div>
+    <label>Max Price</label>
+    <input type="number" name="max_price" placeholder="e.g. 5000" value="{{ q.max_price }}">
+  </div>
+  <button class="btn primary">Search Flights</button>
+</form>
+
+{% if results %}
+  <h2 class="mt">Results</h2>
+  <div class="grid">
+    {% for f in results %}
+    <div class="card hover">
+      <div class="card-top">
+        <span class="badge">{{ f.status }}</span>
+        <h3>{{ f.airline }} <small>#{{ f.id }}</small></h3>
+        <p class="muted">{{ f.origin }} → {{ f.destination }} • {{ f.date }}</p>
+      </div>
+      <div class="times">
+        <div>
+          <div class="time">{{ f.dep_time }}</div>
+          <div class="label">Departure</div>
+        </div>
+        <div>
+          <div class="time">{{ f.arr_time }}</div>
+          <div class="label">Arrival</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <div class="price-section">
+          <div class="price-info">
+            <div class="current-price">₹{{ "{:,}".format(f.dynamic_price) }}</div>
+            {% if f.dynamic_price != f.price %}
+              <div class="base-price">
+                <span class="original">₹{{ "{:,}".format(f.price) }}</span>
+                <span class="trend-badge trend-{{ f.price_trend }}">
+                  {% if f.price_trend == 'high' %}🔥 High Demand
+                  {% elif f.price_trend == 'moderate' %}📈 Rising
+                  {% elif f.price_trend == 'low' %}💰 Great Deal
+                  {% else %}📊 Stable
+                  {% endif %}
+                </span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="occupancy-info">
+            <small>{{ (f.occupancy_rate * 100) | round(0) }}% booked • {{ f.days_until_departure }} days left</small>
+          </div>
+        </div>
+        <a class="btn ghost" href="{{ url_for('flight_details', fid=f.id) }}">View & Book</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="mt">No flights found.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Demo - Flight Reservation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .api-demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .api-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .api-endpoint {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: monospace;
+            color: #00ff88;
+        }
+        
+        .method-get { border-left: 4px solid #28a745; }
+        .method-post { border-left: 4px solid #007bff; }
+        .method-put { border-left: 4px solid #ffc107; }
+        .method-delete { border-left: 4px solid #dc3545; }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .response-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response-json {
+            color: #00ff88;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            color: #ffc107;
+        }
+        
+        .error {
+            color: #dc3545;
+        }
+        
+        .input-group {
+            margin: 1rem 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h2>🛫 AirYatra API Demo</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('search') }}">Search</a></li>
+                <li><a href="{{ url_for('booked_flights') }}">Bookings</a></li>
+                <li><a href="{{ url_for('admin') }}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="api-demo-container">
+        <div class="hero-section">
+            <h1>🔌 REST API Demo</h1>
+            <p>Test the comprehensive Flight Reservation System REST API endpoints</p>
+        </div>
+
+        <!-- API Documentation Section -->
+        <div class="api-section">
+            <h2>📖 API Documentation</h2>
+            <button class="test-button" onclick="testApiDoc()">Get API Documentation</button>
+            <div id="api-doc-response" class="response-container" style="display: none;">
+                <div class="response-json"></div>
+            </div>
+        </div>
+
+        <!-- Flight APIs Section -->
+        <div class="api-section">
+            <h2>✈️ Flight APIs</h2>
+            <div class="grid">
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/flights
+                    </div>
+                    <div class="input-group">
+                        <label>Origin:</label>
+                        <input type="text" id="flight-origin" placeholder="e.g., DEL">
+                    </div>
+                    <div class="input-group">
+                        <label>Destination:</label>
+                        <input type="text" id="flight-destination" placeholder="e.g., BOM">
+                    </div>
+                    <div class="input-group">
+                        <label>Date:</label>
+                        <input type="date" id="flight-date">
+                    </div>
+                    <button class="test-button" onclick="testFlightSearch()">Search Flights</button>
+                </div>
+                
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/flights/{id}
+                    </div>
+                    <div class="input-group">
+                        <label>Flight ID:</label>
+                        <input type="text" id="single-flight-id" placeholder="e.g., AI101">
+                    </div>
+                    <button class="test-button" onclick="testSingleFlight()">Get Flight Details</button>
+                </div>
+            </div>
+            
+            <div class="api-endpoint method-get">
+                <strong>GET</strong> /api/flights/{id}/seats
+            </div>
+            <div class="input-group">
+                <label>Flight ID for Seat Map:</label>
+                <input type="text" id="seat-flight-id" placeholder="e.g., AI101">
+            </div>
+            <button class="test-button" onclick="testFlightSeats()">Get Seat Availability</button>
+            
+            <div id="flight-response" class="response-container" style="display: none;">
+                <div class="response-json"></div>
+            </div>
+        </div>
+
+        <!-- Booking APIs Section -->
+        <div class="api-section">
+            <h2>📋 Booking APIs</h2>
+            <div class="grid">
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/bookings
+                    </div>
+                    <div class="input-group">
+                        <label>Filter by Status:</label>
+                        <select id="booking-status">
+                            <option value="">All Statuses</option>
+                            <option value="CONFIRMED">Confirmed</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                    <button class="test-button" onclick="testBookingsList()">Get Bookings</button>
+                </div>
+                
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/bookings/{pnr}
+                    </div>
+                    <div class="input-group">
+                        <label>PNR:</label>
+                        <input type="text" id="single-booking-pnr" placeholder="e.g., AI-1234">
+                    </div>
+                    <button class="test-button" onclick="testSingleBooking()">Get Booking Details</button>
+                </div>
+            </div>
+            
+            <div class="api-endpoint method-post">
+                <strong>POST</strong> /api/bookings
+            </div>
+            <p><em>Note: Booking creation requires valid flight ID and available seats</em></p>
+            <button class="test-button" onclick="showBookingForm()">Show Booking Creation Form</button>
+            
+            <div id="booking-form" class="grid" style="display: none; margin-top: 1rem;">
+                <div>
+                    <div class="input-group">
+                        <label>Flight ID:</label>
+                        <input type="text" id="create-flight-id" placeholder="e.g., AI101">
+                    </div>
+                    <div class="input-group">
+                        <label>Full Name:</label>
+                        <input type="text" id="create-fullname" placeholder="John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Email:</label>
+                        <input type="email" id="create-email" placeholder="john@example.com">
+                    </div>
+                </div>
+                <div>
+                    <div class="input-group">
+                        <label>Phone:</label>
+                        <input type="text" id="create-phone" placeholder="+91-9876543210">
+                    </div>
+                    <div class="input-group">
+                        <label>Seats (comma-separated):</label>
+                        <input type="text" id="create-seats" placeholder="1A,1B">
+                    </div>
+                    <button class="test-button" onclick="testCreateBooking()">Create Booking</button>
+                </div>
+            </div>
+            
+            <div id="booking-response" class="response-container" style="display: none;">
+                <div class="response-json"></div>
+            </div>
+        </div>
+
+        <!-- Utility APIs Section -->
+        <div class="api-section">
+            <h2>🛠️ Utility APIs</h2>
+            <div class="grid">
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/airports
+                    </div>
+                    <button class="test-button" onclick="testAirports()">Get Airports</button>
+                </div>
+                
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/airlines
+                    </div>
+                    <button class="test-button" onclick="testAirlines()">Get Airlines</button>
+                </div>
+                
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/stats
+                    </div>
+                    <button class="test-button" onclick="testStats()">Get System Stats</button>
+                </div>
+            </div>
+            
+            <div id="utility-response" class="response-container" style="display: none;">
+                <div class="response-json"></div>
+            </div>
+        </div>
+
+        <!-- Pricing APIs Section -->
+        <div class="api-section">
+            <h2>💰 Pricing APIs</h2>
+            <div class="grid">
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/flight/{id}/price
+                    </div>
+                    <div class="input-group">
+                        <label>Flight ID:</label>
+                        <input type="text" id="price-flight-id" placeholder="e.g., AI101">
+                    </div>
+                    <button class="test-button" onclick="testFlightPrice()">Get Flight Price</button>
+                </div>
+                
+                <div>
+                    <div class="api-endpoint method-get">
+                        <strong>GET</strong> /api/flights/prices
+                    </div>
+                    <button class="test-button" onclick="testAllPrices()">Get All Prices</button>
+                </div>
+            </div>
+            
+            <div id="pricing-response" class="response-container" style="display: none;">
+                <div class="response-json"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Client JavaScript -->
+    <script src="{{ url_for('static', filename='api-examples.js') }}"></script>
+    <script>
+        // Initialize API client
+        const api = new FlightReservationAPI();
+
+        // Helper function to display response
+        function displayResponse(containerId, data, loading = false) {
+            const container = document.getElementById(containerId);
+            const jsonDiv = container.querySelector('.response-json');
+            
+            if (loading) {
+                jsonDiv.className = 'response-json loading';
+                jsonDiv.textContent = 'Loading...';
+            } else if (data.success === false) {
+                jsonDiv.className = 'response-json error';
+                jsonDiv.textContent = `Error: ${data.error || 'Unknown error'}`;
+            } else {
+                jsonDiv.className = 'response-json';
+                jsonDiv.textContent = JSON.stringify(data, null, 2);
+            }
+            
+            container.style.display = 'block';
+        }
+
+        // Test functions
+        async function testApiDoc() {
+            displayResponse('api-doc-response', null, true);
+            try {
+                const result = await api.getApiDoc();
+                displayResponse('api-doc-response', result);
+            } catch (error) {
+                displayResponse('api-doc-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testFlightSearch() {
+            displayResponse('flight-response', null, true);
+            try {
+                const filters = {
+                    origin: document.getElementById('flight-origin').value,
+                    destination: document.getElementById('flight-destination').value,
+                    date: document.getElementById('flight-date').value,
+                    dynamic_pricing: 'true'
+                };
+                
+                const result = await api.getFlights(filters);
+                displayResponse('flight-response', result);
+            } catch (error) {
+                displayResponse('flight-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testSingleFlight() {
+            displayResponse('flight-response', null, true);
+            try {
+                const flightId = document.getElementById('single-flight-id').value;
+                if (!flightId) {
+                    throw new Error('Please enter a flight ID');
+                }
+                
+                const result = await api.getFlight(flightId);
+                displayResponse('flight-response', result);
+            } catch (error) {
+                displayResponse('flight-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testFlightSeats() {
+            displayResponse('flight-response', null, true);
+            try {
+                const flightId = document.getElementById('seat-flight-id').value;
+                if (!flightId) {
+                    throw new Error('Please enter a flight ID');
+                }
+                
+                const result = await api.getFlightSeats(flightId);
+                displayResponse('flight-response', result);
+            } catch (error) {
+                displayResponse('flight-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testBookingsList() {
+            displayResponse('booking-response', null, true);
+            try {
+                const filters = {
+                    status: document.getElementById('booking-status').value
+                };
+                
+                const result = await api.getBookings(filters);
+                displayResponse('booking-response', result);
+            } catch (error) {
+                displayResponse('booking-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testSingleBooking() {
+            displayResponse('booking-response', null, true);
+            try {
+                const pnr = document.getElementById('single-booking-pnr').value;
+                if (!pnr) {
+                    throw new Error('Please enter a PNR');
+                }
+                
+                const result = await api.getBooking(pnr);
+                displayResponse('booking-response', result);
+            } catch (error) {
+                displayResponse('booking-response', { success: false, error: error.message });
+            }
+        }
+
+        function showBookingForm() {
+            const form = document.getElementById('booking-form');
+            form.style.display = form.style.display === 'none' ? 'grid' : 'none';
+        }
+
+        async function testCreateBooking() {
+            displayResponse('booking-response', null, true);
+            try {
+                const bookingData = {
+                    flight_id: document.getElementById('create-flight-id').value,
+                    fullname: document.getElementById('create-fullname').value,
+                    email: document.getElementById('create-email').value,
+                    phone: document.getElementById('create-phone').value,
+                    seats: document.getElementById('create-seats').value.split(',').map(s => s.trim())
+                };
+                
+                // Validate required fields
+                if (!bookingData.flight_id || !bookingData.fullname || !bookingData.email || !bookingData.phone || bookingData.seats.length === 0) {
+                    throw new Error('Please fill in all required fields');
+                }
+                
+                const result = await api.createBooking(bookingData);
+                displayResponse('booking-response', result);
+            } catch (error) {
+                displayResponse('booking-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testAirports() {
+            displayResponse('utility-response', null, true);
+            try {
+                const result = await api.getAirports();
+                displayResponse('utility-response', result);
+            } catch (error) {
+                displayResponse('utility-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testAirlines() {
+            displayResponse('utility-response', null, true);
+            try {
+                const result = await api.getAirlines();
+                displayResponse('utility-response', result);
+            } catch (error) {
+                displayResponse('utility-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testStats() {
+            displayResponse('utility-response', null, true);
+            try {
+                const result = await api.getStats();
+                displayResponse('utility-response', result);
+            } catch (error) {
+                displayResponse('utility-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testFlightPrice() {
+            displayResponse('pricing-response', null, true);
+            try {
+                const flightId = document.getElementById('price-flight-id').value;
+                if (!flightId) {
+                    throw new Error('Please enter a flight ID');
+                }
+                
+                const result = await api.getFlightPrice(flightId);
+                displayResponse('pricing-response', result);
+            } catch (error) {
+                displayResponse('pricing-response', { success: false, error: error.message });
+            }
+        }
+
+        async function testAllPrices() {
+            displayResponse('pricing-response', null, true);
+            try {
+                const result = await api.getAllFlightPrices();
+                displayResponse('pricing-response', result);
+            } catch (error) {
+                displayResponse('pricing-response', { success: false, error: error.message });
+            }
+        }
+
+        // Set default date to tomorrow
+        document.getElementById('flight-date').value = new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0];
+    </script>
+</body>
+</html>

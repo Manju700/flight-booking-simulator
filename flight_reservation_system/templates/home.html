@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero glass animate__animated animate__fadeInDown">
+  <div>
+    <h1 class="animate__animated animate__fadeInLeft">Fly India’s best airlines at one click!</h1>
+    <p class="animate__animated animate__fadeIn animate__delay-1s">
+      Book domestic flights across India with ease — live seat maps, instant PNR & trusted airlines at your fingertips.
+    </p>
+
+    <!-- 🔹 SEARCH FORM (restored) -->
+    <form action="{{ url_for('search') }}" class="search-grid animate__animated animate__zoomIn animate__delay-2s">
+      <div>
+        <label>From</label>
+        <select name="origin">
+          <option value="">Any</option>
+          {% for o in origins %}
+          <option value="{{o}}">{{o}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>To</label>
+        <select name="destination">
+          <option value="">Any</option>
+          {% for d in destinations %}
+          <option value="{{d}}">{{d}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" name="date">
+      </div>
+      <div>
+        <label>Max Price</label>
+        <input type="number" name="max_price" placeholder="e.g. 5000">
+      </div>
+      <button class="btn primary">Search Flights</button>
+    </form>
+    <!-- 🔹 SEARCH FORM END -->
+  </div>
+
+  <img class="hero-jet animate__animated animate__fadeInRight animate__delay-1s"
+       src="https://images.unsplash.com/photo-1726424601630-6f3bb6339f90?q=80&w=1170&auto=format&fit=crop"
+       alt="Air India plane">
+</section>
+
+
+
+<h2 class="mt">Upcoming flights</h2>
+<div class="grid">
+{% for f in flights %}
+  <div class="card hover animate__animated animate__fadeInUp animate__delay-{{ loop.index * 0.2 }}s">
+    <div class="card-top">
+      <span class="badge">{{ f.status }}</span>
+      <h3>{{ f.airline }} <small>#{{ f.id }}</small></h3>
+      <p class="muted">{{ f.origin }} → {{ f.destination }} • {{ f.date }}</p>
+    </div>
+    <div class="times">
+      <div>
+        <div class="time">{{ f.dep_time }}</div>
+        <div class="label">Departure</div>
+      </div>
+      <div>
+        <div class="time">{{ f.arr_time }}</div>
+        <div class="label">Arrival</div>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <div class="price-section">
+        <div class="price-info">
+          <div class="current-price">₹{{ "{:,}".format(f.dynamic_price) }}</div>
+          {% if f.dynamic_price != f.price %}
+            <div class="base-price">
+              <span class="original">₹{{ "{:,}".format(f.price) }}</span>
+              <span class="trend-badge trend-{{ f.price_trend }}">
+                {% if f.price_trend == 'high' %}🔥 High Demand
+                {% elif f.price_trend == 'moderate' %}📈 Rising
+                {% elif f.price_trend == 'low' %}💰 Great Deal
+                {% else %}📊 Stable
+                {% endif %}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="occupancy-info">
+          <small>{{ (f.occupancy_rate * 100) | round(0) }}% booked • {{ f.days_until_departure }} days left</small>
+        </div>
+      </div>
+      <a class="btn ghost" href="{{ url_for('flight_details', fid=f.id) }}">View & Book</a>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
+<form action="{{ url_for('booking_search') }}" method="GET" class="pnr-check" style="margin-top:12px;">
+  <label>Check PNR</label>
+  <div style="display:flex;gap:8px;">
+    <input name="pnr" placeholder="Enter PNR" required>
+    <button class="btn">Check</button>
+  </div>
+</form>

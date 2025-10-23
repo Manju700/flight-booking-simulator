@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero glass animate__animated animate__fadeInDown">
+  <h1 class="animate__animated animate__fadeInLeft">All Booked Flights</h1>
+  <p class="animate__animated animate__fadeIn animate__delay-1s">
+    View all flight bookings across the system with complete passenger and flight details.
+  </p>
+</div>
+
+{% if booked_flights %}
+<div class="grid" style="margin-top: 2rem;">
+{% for item in booked_flights %}
+  <div class="card hover animate__animated animate__fadeInUp animate__delay-{{ loop.index * 0.1 }}s">
+    <div class="card-top">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge {{ 'success' if item.booking.status == 'CONFIRMED' else 'warn' if item.booking.status == 'PENDING' else 'danger' }}">
+          {{ item.booking.status }}
+        </span>
+        <div class="pill strong">{{ item.booking.pnr }}</div>
+      </div>
+      <h3>{{ item.flight.airline }} <small>#{{ item.flight.id }}</small></h3>
+      <p class="muted">{{ item.flight.origin }} → {{ item.flight.destination }} • {{ item.flight.date | date_in }}</p>
+    </div>
+    
+    <div style="margin: 12px 0; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
+        <div><strong>Passenger:</strong> {{ item.booking.fullname }}</div>
+        <div><strong>Phone:</strong> {{ item.booking.phone }}</div>
+        <div><strong>Email:</strong> {{ item.booking.email }}</div>
+        <div><strong>Booked:</strong> {{ item.booking.created_at }}</div>
+      </div>
+    </div>
+    
+    <div class="times">
+      <div>
+        <div class="time">{{ item.flight.dep_time }}</div>
+        <div class="label">Departure</div>
+      </div>
+      <div>
+        <div class="time">{{ item.flight.arr_time }}</div>
+        <div class="label">Arrival</div>
+      </div>
+    </div>
+    
+    <div style="margin: 8px 0;">
+      <div><strong>Seats:</strong> {{ item.booking.seats | join(', ') }}</div>
+      <div><strong>Amount:</strong> ₹{{ "{:,}".format(item.booking.amount) }}</div>
+    </div>
+    
+    <div class="card-bottom" style="display: block;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <div class="price">{{ item.booking.seats | length }} seat{{ 's' if item.booking.seats | length > 1 else '' }}</div>
+        <a class="btn ghost" href="{{ url_for('booking_details', pnr=item.booking.pnr) }}">View Details</a>
+      </div>
+      {% if item.booking.status == 'CONFIRMED' %}
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="{{ url_for('download_ticket', pnr=item.booking.pnr) }}" class="btn primary" style="font-size: 12px; padding: 8px 12px;">
+          📄 PDF
+        </a>
+        <a href="{{ url_for('download_json_receipt', pnr=item.booking.pnr) }}" class="btn secondary" style="font-size: 12px; padding: 8px 12px;">
+          📋 JSON
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<div style="text-align: center; margin: 2rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+  <h3>Booking Summary</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <div>
+      <div class="stat-number">{{ booked_flights | length }}</div>
+      <div class="stat-label">Total Bookings</div>
+    </div>
+    <div>
+      <div class="stat-number">{{ booked_flights | selectattr('booking.status', 'equalto', 'CONFIRMED') | list | length }}</div>
+      <div class="stat-label">Confirmed</div>
+    </div>
+    <div>
+      <div class="stat-number">{{ booked_flights | selectattr('booking.status', 'equalto', 'PENDING') | list | length }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div>
+      <div class="stat-number">₹{{ "{:,}".format(booked_flights | sum(attribute='booking.amount')) }}</div>
+      <div class="stat-label">Total Revenue</div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<div class="card glass" style="text-align: center; margin-top: 2rem; padding: 3rem;">
+  <h2>No Bookings Found</h2>
+  <p class="muted">No flight bookings have been made yet.</p>
+  <a href="{{ url_for('home') }}" class="btn primary" style="margin-top: 1rem;">Browse Flights</a>
+</div>
+{% endif %}
+
+<style>
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+}
+.stat-label {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+}
+.badge.success {
+  background: #22c55e;
+}
+.badge.warn {
+  background: #f59e0b;
+}
+.badge.danger {
+  background: #ef4444;
+}
+</style>
+{% endblock %}

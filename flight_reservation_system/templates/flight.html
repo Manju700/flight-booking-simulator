@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Flight Header -->
+<div class="flight-hero glass">
+  <div class="flight-info">
+    <h1>{{ flight.airline }} <small>#{{ flight.id }}</small></h1>
+    <p class="muted">{{ flight.origin }} → {{ flight.destination }} • {{ flight.date }}</p>
+
+    <div class="chip-row">
+      <span class="chip">Dep: {{ flight.dep_time }}</span>
+      <span class="chip">Arr: {{ flight.arr_time }}</span>
+      <span class="chip">Gate: {{ flight.gate }}</span>
+      <span class="chip">Terminal: {{ flight.terminal }}</span>
+      <span class="chip {{ 'warn' if flight.status != 'On Time' else 'success' }}">{{ flight.status }}</span>
+    </div>
+
+    {% if flight.amenities %}
+    <div class="amenities mt">
+      <label>Amenities:</label>
+      {% for a in flight.amenities %}
+        <span class="pill">{{ a }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="price-card">
+    <div class="price-label">Price per seat</div>
+    <div class="price-section-detail">
+      <div class="price dynamic" id="current-flight-price">₹{{ "{:,}".format(flight.dynamic_price) }}</div>
+      {% if flight.dynamic_price != flight.price %}
+        <div class="base-price-detail">
+          <span class="original-price">Base: ₹{{ "{:,}".format(flight.price) }}</span>
+          <span class="trend-badge trend-{{ flight.price_trend }}">
+            {% if flight.price_trend == 'high' %}🔥 High Demand
+            {% elif flight.price_trend == 'moderate' %}📈 Rising
+            {% elif flight.price_trend == 'low' %}💰 Great Deal
+            {% else %}📊 Stable
+            {% endif %}
+          </span>
+        </div>
+      {% endif %}
+      <div class="pricing-factors">
+        <small class="muted">
+          {{ (flight.occupancy_rate * 100) | round(0) }}% occupied • 
+          {{ flight.days_until_departure }} days left
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Seatmap + Booking Form -->
+<div class="flex two mt-lg">
+  <!-- Seatmap -->
+  <div class="seatmap glass">
+    <h3>Select Your Seats</h3>
+    <div id="seat-grid" class="seat-grid" data-fid="{{ flight.id }}"></div>
+
+    <div class="legend">
+      <span class="seat sample"></span> Available
+      <span class="seat sample selected"></span> Selected
+      <span class="seat sample booked"></span> Booked
+    </div>
+  </div>
+
+  <!-- Booking Form -->
+  <div class="booking-form glass">
+    <h3>Passenger Details</h3>
+    <form action="{{ url_for('book') }}" method="POST" id="bookForm">
+      <input type="hidden" name="flight_id" value="{{ flight.id }}">
+
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phone">Phone (10-digit)</label>
+      <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" title="Enter a valid 10-digit phone number">
+
+      <label>Selected Seats</label>
+      <div id="selected-seats" class="selected-seats"></div>
+
+      <button class="btn primary full">✅ Confirm Booking</button>
+    </form>
+  </div>
+</div>
+
+<!-- Seat Setup Script -->
+<script>
+  window.__SEAT_SETUP__ = {
+    rows: {{ flight.seats.rows|tojson|safe }},
+    cols: {{ flight.seats.cols|tojson|safe }},
+    booked: {{ booked|tojson|safe }}
+  };
+</script>
+
+{% endblock %}

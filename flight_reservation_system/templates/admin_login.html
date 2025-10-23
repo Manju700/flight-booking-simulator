@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card glass narrow">
+  <h2>Admin Access</h2>
+  <p class="muted">Enter admin password to manage flights and view bookings.</p>
+  <form method="POST" action="{{ url_for('admin') }}">
+    <label>Password</label>
+    <input type="password" name="key" required>
+    <button class="btn primary">Enter</button>
+  </form>
+  <p class="muted small">Default password: <code>admin123</code> (change via env var <code>FRS_ADMIN_PASS</code>)</p>
+</div>
+{% endblock %}

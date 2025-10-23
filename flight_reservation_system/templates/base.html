@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ title or "FlightCraft Studio ✈️" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+<body data-theme="dark">
+  <div class="bg-animated"></div>
+  <nav class="nav glass">
+    <a class="brand" href="{{ url_for('home') }}">FlightCraft Studio ✈️</a>
+    <div class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('booked_flights') }}">Booked Flights</a>
+      <a href="{{ url_for('search') }}">Search</a>
+      <a href="{{ url_for('admin') }}">Admin</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="theme-icon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for cat, msg in messages %}
+      <div class="toast {{cat}}">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <script>
+      {% for category, msg in messages %}
+      Swal.fire({
+        icon: "{{ 'success' if category == 'success' else 'info' if category == 'info' else 'error' }}",
+        title: "{{ msg }}",
+        showConfirmButton: false,
+        timer: 3000
+      });
+      {% endfor %}
+    </script>
+  {% endif %}
+{% endwith %}
+
+  
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h2>FlightCraft Studio ✈️</h2>
+      <p>Book your flights in seconds. Trusted by travelers across India 🇮🇳</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('booked_flights') }}">Booked Flights</a>
+      <a href="{{ url_for('search') }}">Search Flights</a>
+      <a href="{{ url_for('admin') }}">Admin</a>
+    </div>
+    <div class="footer-contact">
+      <h4>Connect</h4>
+      <p>📧 manju@pesce.ac.in</p>
+      <p>📞 +91 7353787686</p>
+      <div class="social">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+   <p>© {{ now.year }} FlightCraft Studio. Made with ❤️ in India.</p>
+
+  </div>
+</footer>
+  
+</body>
+</html>

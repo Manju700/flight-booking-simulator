@@ -1,0 +1,71 @@
+{
+  "sample_flights": [
+    {
+      "id": "TEST001",
+      "airline": "Test Airways",
+      "origin": "DEL",
+      "destination": "BOM",
+      "departure_time": "10:00",
+      "arrival_time": "12:30",
+      "price": 5000,
+      "available_seats": 45
+    },
+    {
+      "id": "TEST002", 
+      "airline": "Test Express",
+      "origin": "BLR",
+      "destination": "MAA",
+      "departure_time": "14:15",
+      "arrival_time": "15:45",
+      "price": 3500,
+      "available_seats": 32
+    }
+  ],
+  "sample_passengers": [
+    {
+      "name": "John Test User",
+      "email": "john.test@example.com",
+      "phone": "+91-9876543210",
+      "age": 30
+    },
+    {
+      "name": "Jane Test User",
+      "email": "jane.test@example.com", 
+      "phone": "+91-9876543211",
+      "age": 25
+    }
+  ],
+  "test_routes": [
+    {
+      "origin": "DEL",
+      "destination": "BOM",
+      "origin_name": "Delhi",
+      "destination_name": "Mumbai"
+    },
+    {
+      "origin": "BLR",
+      "destination": "MAA",
+      "origin_name": "Bangalore", 
+      "destination_name": "Chennai"
+    },
+    {
+      "origin": "CCU",
+      "destination": "HYD",
+      "origin_name": "Kolkata",
+      "destination_name": "Hyderabad"
+    }
+  ],
+  "admin_config": {
+    "default_password": "admin123",
+    "test_password": "testadmin456"
+  },
+  "api_endpoints": [
+    "/api",
+    "/api/flights", 
+    "/api/bookings",
+    "/api/search",
+    "/api/airports",
+    "/api/airlines",
+    "/api/stats"
+  ]
+}

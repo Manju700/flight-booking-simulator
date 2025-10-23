@@ -1,0 +1,308 @@
+{
+  "flights": [
+    {
+      "id": "AI101",
+      "airline": "Air India",
+      "origin": "DEL",
+      "destination": "BOM",
+      "date": "2025-09-08",
+      "dep_time": "09:00",
+      "arr_time": "11:15",
+      "price": 5800,
+      "status": "On Time",
+      "gate": "A2",
+      "terminal": "T3",
+      "seats": {
+        "rows": 15,
+        "cols": 6,
+        "booked": [
+          "2B",
+          "1C",
+          "3A",
+          "3F",
+          "4E",
+          "5D",
+          "4D",
+          "3E",
+          "2A",
+          "1B",
+          "2F",
+          "3B",
+          "4A",
+          "4F",
+          "2C",
+          "5E",
+          "6D",
+          "3C",
+          "1D",
+          "1A"
+        ]
+      },
+      "amenities": [
+        "1 Cabin Bag",
+        "Meal Included"
+      ]
+    },
+    {
+      "id": "6E212",
+      "airline": "IndiGo",
+      "origin": "BLR",
+      "destination": "DEL",
+      "date": "2025-09-09",
+      "dep_time": "07:30",
+      "arr_time": "10:10",
+      "price": 4500,
+      "status": "On Time",
+      "gate": "B5",
+      "terminal": "T1",
+      "seats": {
+        "rows": 18,
+        "cols": 6,
+        "booked": [
+          "1A",
+          "1B"
+        ]
+      },
+      "amenities": [
+        "1 Cabin Bag",
+        "Paid Meal"
+      ]
+    },
+    {
+      "id": "SG404",
+      "airline": "SpiceJet",
+      "origin": "MAA",
+      "destination": "HYD",
+      "date": "2025-09-10",
+      "dep_time": "14:20",
+      "arr_time": "15:35",
+      "price": 3200,
+      "status": "Delayed",
+      "gate": "C1",
+      "terminal": "T2",
+      "seats": {
+        "rows": 12,
+        "cols": 6,
+        "booked": [
+          "3C",
+          "5A",
+          "5F",
+          "6E",
+          "7D",
+          "8D",
+          "5B",
+          "6A",
+          "6F",
+          "7E"
+        ]
+      },
+      "amenities": [
+        "Cabin Bag",
+        "Priority Boarding"
+      ]
+    },
+    {
+      "id": "UK887",
+      "airline": "Vistara",
+      "origin": "DEL",
+      "destination": "GOI",
+      "date": "2025-09-12",
+      "dep_time": "17:50",
+      "arr_time": "20:15",
+      "price": 7200,
+      "status": "On Time",
+      "gate": "D4",
+      "terminal": "T3",
+      "seats": {
+        "rows": 16,
+        "cols": 6,
+        "booked": [
+          "5A",
+          "5B",
+          "6C"
+        ]
+      },
+      "amenities": [
+        "2 Cabin Bags",
+        "In-flight Meal",
+        "Extra Legroom"
+      ]
+    },
+    {
+      "id": "QP555",
+      "airline": "Akasa Air",
+      "origin": "AMD",
+      "destination": "CCU",
+      "date": "2025-09-15",
+      "dep_time": "06:10",
+      "arr_time": "08:45",
+      "price": 5400,
+      "seats": {
+        "rows": 12,
+        "cols": 6,
+        "booked": [
+          "1A",
+          "1B",
+          "2A",
+          "1F"
+        ]
+      },
+      "status": "On Time",
+      "gate": "E2",
+      "terminal": "T1",
+      "amenities": [
+        "Cabin Bag",
+        "Paid Meal"
+      ]
+    },
+    {
+      "id": "AI202",
+      "airline": "Air India",
+      "origin": "DEL",
+      "destination": "BOM",
+      "date": "2025-09-17",
+      "dep_time": "20:30",
+      "arr_time": "22:45",
+      "price": 5500,
+      "seats": {
+        "rows": 12,
+        "cols": 6,
+        "booked": [
+          "3C",
+          "4B",
+          "5A",
+          "5F",
+          "6E",
+          "7D"
+        ]
+      },
+      "status": "On Time",
+      "gate": "A1",
+      "terminal": "T3",
+      "amenities": [
+        "Meal",
+        "Cabin Bag",
+        "WiFi"
+      ]
+    },
+    {
+      "id": "SG909",
+      "airline": "SpiceJet",
+      "origin": "HYD",
+      "destination": "DEL",
+      "date": "2025-10-04",
+      "dep_time": "06:45",
+      "arr_time": "09:00",
+      "price": 3500,
+      "seats": {
+        "rows": 10,
+        "cols": 6,
+        "booked": [
+          "5F",
+          "5A",
+          "6A",
+          "7F",
+          "9A",
+          "2F",
+          "1A"
+        ]
+      },
+      "status": "Delayed",
+      "gate": "D4",
+      "terminal": "T1",
+      "amenities": [
+        "Cabin Bag"
+      ]
+    },
+    {
+      "id": "AI301",
+      "airline": "Air India",
+      "origin": "DEL",
+      "destination": "CCU",
+      "date": "2025-09-18",
+      "dep_time": "19:20",
+      "arr_time": "09:55",
+      "price": 5600,
+      "seats": {
+        "rows": 14,
+        "cols": 6,
+        "booked": []
+      },
+      "status": "On Time",
+      "gate": "A2",
+      "terminal": "T3",
+      "amenities": [
+        "Meal",
+        "Cabin Bag",
+        "WiFi"
+      ]
+    },
+    {
+      "id": "6E450",
+      "airline": "IndiGo",
+      "origin": "PNQ",
+      "destination": "MAA",
+      "date": "2025-09-29",
+      "dep_time": "10:40",
+      "arr_time": "12:55",
+      "price": 4290,
+      "seats": {
+        "rows": 14,
+        "cols": 6,
+        "booked": []
+      },
+      "status": "Delayed",
+      "gate": "B1",
+      "terminal": "T1",
+      "amenities": [
+        "Extra Legroom",
+        "Cabin Bag"
+      ]
+    },
+    {
+      "id": "UK777",
+      "airline": "Vistara",
+      "origin": "BOM",
+      "destination": "GOI",
+      "date": "",
+      "dep_time": "15:15",
+      "arr_time": "16:45",
+      "price": 3700,
+      "seats": {
+        "rows": 12,
+        "cols": 6,
+        "booked": []
+      },
+      "status": "Delayed",
+      "gate": "C3",
+      "terminal": "T2",
+      "amenities": [
+        "Meal",
+        "In-flight Entertainment"
+      ]
+    },
+    {
+      "id": "121212aabc",
+      "airline": "Air India",
+      "origin": "BOM",
+      "destination": "DEL",
+      "date": "2025-10-07",
+      "dep_time": "03:00",
+      "arr_time": "05:50",
+      "price": 4500,
+      "seats": {
+        "rows": 10,
+        "cols": 6,
+        "booked": []
+      },
+      "status": "On Time",
+      "gate": "C2",
+      "terminal": "T2",
+      "amenities": [
+        "Meal",
+        "WiFi",
+        "In-flight Entertainment"
+      ]
+    }
+  ]
+}

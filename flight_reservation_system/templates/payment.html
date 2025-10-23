@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card glass" style="text-align:center;padding:30px;">
+  <h2>Mock Payment</h2>
+  <p>Amount: <strong>₹{{ booking.amount }}</strong></p>
+  <p>PNR: <strong>{{ booking.pnr }}</strong></p>
+  <form method="POST">
+    <button class="btn primary" type="submit">Pay Now (Simulate)</button>
+    <a href="{{ url_for('admin') }}" class="btn">Cancel</a>
+  </form>
+  <p class="muted mt">This is a simulated payment gateway for demo purpose.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<!-- Stats -->
+<div class="grid three">
+  <div class="stat glass"><div class="stat-num">{{ flights|length }}</div><div class="stat-label">Flights</div></div>
+  <div class="stat glass"><div class="stat-num">{{ bookings|length }}</div><div class="stat-label">Bookings</div></div>
+  <div class="stat glass"><div class="stat-num">₹{{ "{:,}".format(total_rev or 0) }}</div><div class="stat-label">Revenue</div></div>
+</div>
+
+<!-- Dynamic Pricing Dashboard -->
+<div class="card glass mt">
+  <h3>🔥 Dynamic Pricing Dashboard</h3>
+  <div class="pricing-dashboard">
+    <div class="dashboard-controls">
+      <button id="refreshPricing" class="btn secondary">🔄 Refresh Pricing Data</button>
+      <button id="togglePricingUpdates" class="btn primary">📊 Enable Live Updates</button>
+    </div>
+    <div id="pricingContent">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading dynamic pricing data...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Flight -->
+<div class="grid two mt">
+  <div class="card glass form-card">
+    <h3>Add / Edit Flight ✈️</h3>
+    <form method="POST" action="{{ url_for('admin') }}" id="flightForm">
+      <input type="hidden" name="key" value="{{ key }}">
+
+      <label>Flight ID</label>
+      <input id="fid" name="id" required placeholder="e.g. AI202">
+
+      <label>Airline</label>
+      <input id="airline" name="airline" placeholder="Air India, Indigo, etc.">
+
+      <div class="grid two">
+        <div><label>Origin</label><input id="origin" name="origin" placeholder="DEL"></div>
+        <div><label>Destination</label><input id="destination" name="destination" placeholder="BOM"></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Date</label><input id="date" type="date" name="date"></div>
+        <div><label>Departure</label><input id="dep_time" type="time" name="dep_time"></div>
+        <div><label>Arrival</label><input id="arr_time" type="time" name="arr_time"></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Price (₹)</label><input id="price" type="number" name="price" placeholder="5000"></div>
+        <div><label>Rows</label><input id="rows" type="number" name="rows" placeholder="12"></div>
+        <div><label>Cols</label><input id="cols" type="number" name="cols" placeholder="6"></div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Status</label><input id="status" name="status" placeholder="On Time"></div>
+        <div><label>Gate</label><input id="gate" name="gate" placeholder="A1"></div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Terminal</label><input id="terminal" name="terminal" placeholder="T3"></div>
+        <div><label>Amenities</label><input id="amenities" name="amenities" placeholder="Meal, Cabin bag"></div>
+      </div>
+
+      <div class="btn-row mt">
+        <button name="action" value="add" class="btn primary">➕ Add Flight</button>
+        <button name="action" value="edit" class="btn warn">✏️ Edit Flight</button>
+        <button name="action" value="remove" class="btn danger">🗑 Remove Flight</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Existing Flights Table -->
+  <div class="card glass">
+    <h3>Existing Flights</h3>
+    <div class="table">
+      <div class="t-head">
+        <span>ID</span><span>Airline</span><span>Route</span><span>Date</span><span>Time</span><span>Price</span><span>Status</span><span>Edit</span>
+      </div>
+      {% for f in flights %}
+      <div class="t-row">
+        <span>{{ f.id }}</span>
+        <span>{{ f.airline }}</span>
+        <span>{{ f.origin }} → {{ f.destination }}</span>
+        <span>{{ f.date }}</span>
+        <span>{{ f.dep_time }} - {{ f.arr_time }}</span>
+        <span>₹{{ "{:,}".format(f.price) }}</span>
+        <span><span class="badge {{ 'warn' if f.status != 'On Time' else '' }}">{{ f.status }}</span></span>
+        <span>
+          <button class="btn small" onclick='fillForm({{ f|tojson|safe }})'>Edit</button>
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ✨ User Details Section (Before Bookings) -->
+<div class="card glass mt">
+  <h3>Passenger Details</h3>
+  <div class="table">
+    <div class="t-head">
+      <span>Name</span><span>Email</span><span>Phone</span>
+    </div>
+    {% for b in bookings %}
+    <div class="t-row">
+      <span>{{ b.fullname }}</span>
+      <span>{{ b.email }}</span>
+      <span>{{ b.phone }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Bookings -->
+<div class="card glass mt">
+  <h3>Bookings</h3>
+  <div class="table">
+    <div class="t-head">
+      <span>PNR</span><span>Flight</span><span>Name</span><span>Seats</span><span>Amount</span><span>Status</span><span>Created</span>
+    </div>
+    {% for b in bookings %}
+    <div class="t-row">
+      <span>{{ b.pnr }}</span>
+      <span>{{ b.flight_id }}</span>
+      <span>{{ b.fullname }}</span>
+      <span>{{ b.seats|join(', ') }}</span>
+      <span>₹{{ "{:,}".format(b.amount) }}</span>
+      <span><span class="badge {{ 'warn' if b.status != 'CONFIRMED' else '' }}">{{ b.status }}</span></span>
+      <span>{{ b.created_at }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- JS to auto-fill form when clicking Edit -->
+<script>
+function fillForm(f) {
+  document.getElementById("fid").value = f.id;
+  document.getElementById("airline").value = f.airline;
+  document.getElementById("origin").value = f.origin;
+  document.getElementById("destination").value = f.destination;
+  document.getElementById("date").value = f.date;
+  document.getElementById("dep_time").value = f.dep_time;
+  document.getElementById("arr_time").value = f.arr_time;
+  document.getElementById("price").value = f.price;
+  document.getElementById("rows").value = f.seats.rows;
+  document.getElementById("cols").value = f.seats.cols;
+  document.getElementById("status").value = f.status;
+  document.getElementById("gate").value = f.gate;
+  document.getElementById("terminal").value = f.terminal;
+  document.getElementById("amenities").value = f.amenities ? f.amenities.join(", ") : "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+</script>
+{% endblock %}

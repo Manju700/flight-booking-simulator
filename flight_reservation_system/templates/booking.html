@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card glass">
+  <h1>Booking Details</h1>
+  <div class="grid two">
+    <div>
+      <h3>PNR: <span class="pill strong">{{ booking.pnr }}</span></h3>
+      <p><strong>Name:</strong> {{ booking.fullname }}</p>
+      <p><strong>Email:</strong> {{ booking.email }}</p>
+      <p><strong>Phone:</strong> {{ booking.phone }}</p>
+      <p><strong>Status:</strong> <span class="badge {{ 'warn' if booking.status != 'CONFIRMED' else '' }}">{{ booking.status }}</span></p>
+    </div>
+    <div>
+      <h3>Flight</h3>
+      <p>{{ flight.airline }} ({{ flight.id }})</p>
+      <p>{{ flight.origin }} → {{ flight.destination }}</p>
+      <p>{{ flight.date }} | {{ flight.dep_time }} - {{ flight.arr_time }}</p>
+      <p><strong>Seats:</strong> {{ booking.seats|join(', ') }}</p>
+      <p><strong>Amount:</strong> ₹{{ "{:,}".format(booking.amount) }}</p>
+    </div>
+  </div>
+  {% if booking.status == 'CONFIRMED' %}
+  <div class="mt" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <a href="{{ url_for('download_ticket', pnr=booking.pnr) }}" class="btn primary">
+      📄 Download PDF
+    </a>
+    <a href="{{ url_for('download_json_receipt', pnr=booking.pnr) }}" class="btn secondary" id="jsonDownload">
+      📋 Download JSON
+    </a>
+    <form action="{{ url_for('cancel_booking', pnr=booking.pnr) }}" method="POST" style="margin: 0;">
+      <button class="btn danger" onclick="return confirm('Cancel this booking? Seats will be released.');">Cancel Booking</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+{% if show_modal %}
+<!-- PNR popup modal -->
+<div id="pnrModal" class="modal" style="display:flex;align-items:center;justify-content:center;">
+  <div class="modal-content glass" style="padding:20px;max-width:520px;">
+    <h3>Booking Confirmed ✅</h3>
+    <p>Your PNR is <strong>{{ booking.pnr }}</strong></p>
+    <p>An SMS with PNR has been sent to <strong>{{ booking.phone }}</strong> (simulated)</p>
+    <div style="margin-top:12px; display: flex; gap: 8px; flex-wrap: wrap;">
+      <a href="{{ url_for('download_ticket', pnr=booking.pnr) }}" class="btn primary">📄 PDF Receipt</a>
+      <a href="{{ url_for('download_json_receipt', pnr=booking.pnr) }}" class="btn secondary">📋 JSON Receipt</a>
+      <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // auto-close modal after a while
+  setTimeout(()=> {
+    const m = document.getElementById('pnrModal');
+    if (m) {
+      m.style.display = 'flex';
+      // keep it open; close on click outside
+      window.addEventListener('click', (e)=> {
+        if (e.target === m) m.style.display='none';
+      });
+    }
+  }, 200);
+</script>
+{% endif %}
