@@ -200,16 +200,16 @@ flight-booking-simulator/
 ## 🎨 Screenshots
 
 ### Homepage
-![Homepage](https://via.placeholder.com/800x400/4CAF50/FFFFFF?text=FlightCraft+Studio+Homepage)
+![Homepage](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/homepage.png)
 
 ### Flight Search
-![Search](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=Flight+Search+Interface)
+![Search](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/search.png)
 
 ### Booking Process
-![Booking](https://via.placeholder.com/800x400/FF9800/FFFFFF?text=Multi-step+Booking+Process)
+![Booking](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/booking.png)
 
 ### Admin Dashboard
-![Admin](https://via.placeholder.com/800x400/9C27B0/FFFFFF?text=Admin+Dashboard)
+![Admin](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/admin.png)
 
 ## 🤝 Contributing
 
