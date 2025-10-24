@@ -203,13 +203,13 @@ flight-booking-simulator/
 ![Homepage](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/homepage.png)
 
 ### Flight Search
-![Search](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/search.png)
+![Search](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/searchsection.png)
 
 ### Booking Process
-![Booking](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/booking.png)
+![Booking](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/bookingticket.png)
 
 ### Admin Dashboard
-![Admin](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/admin.png)
+![Admin](https://raw.githubusercontent.com/Manju700/flight-booking-simulator/main/screenshots/admindashboard.png)
 
 ## 🤝 Contributing
 
