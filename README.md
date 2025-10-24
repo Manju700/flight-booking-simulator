@@ -200,16 +200,16 @@ flight-booking-simulator/
 ## 🎨 Screenshots
 
 ### Homepage
-![Homepage](./screenshots/homepage.png)
+<img src="./screenshots/homepage.png" alt="Homepage" width="800">
 
 ### Flight Search
-![Search](./screenshots/searchsection.png)
+<img src="./screenshots/searchsection.png" alt="Search" width="800">
 
 ### Booking Process
-![Booking](./screenshots/bookingticket.png)
+<img src="./screenshots/bookingticket.png" alt="Booking" width="800">
 
 ### Admin Dashboard
-![Admin](./screenshots/admindashboard.png)
+<img src="./screenshots/admindashboard.png" alt="Admin" width="800">
 
 ## 🤝 Contributing
 
