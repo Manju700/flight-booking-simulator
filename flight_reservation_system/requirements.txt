@@ -3,6 +3,7 @@ Flask-SQLAlchemy>=3.0.0
 Pillow>=9.0.0
 reportlab>=3.6.0
 qrcode>=7.0.0
+gunicorn>=21.2.0
 
 # Optional: Testing dependencies (install separately with requirements-test.txt)
 # pytest>=7.4.0
