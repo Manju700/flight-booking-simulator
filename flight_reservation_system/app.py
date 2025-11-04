@@ -26,6 +26,69 @@ FLIGHTS_FILE = os.path.join(DATA_DIR, "flights.json")
 BOOKINGS_FILE = os.path.join(DATA_DIR, "bookings.json")
 ADMIN_PASS = os.environ.get("FRS_ADMIN_PASS", "admin123")
 
+# ------------------ One-time DB bootstrap on first deploy ------------------
+def _load_json(path, default):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+def initialize_database_if_needed():
+    """Create tables and seed data on empty DB (first run)."""
+    with app.app_context():
+        db.create_all()
+
+        # Seed flights
+        if Flight.query.count() == 0:
+            flights_data = _load_json(FLIGHTS_FILE, {"flights": []}).get("flights", [])
+            for item in flights_data:
+                flight = Flight(
+                    id=item.get("id"),
+                    airline=item.get("airline", ""),
+                    origin=item.get("origin", ""),
+                    destination=item.get("destination", ""),
+                    date=item.get("date", ""),
+                    dep_time=item.get("dep_time", ""),
+                    arr_time=item.get("arr_time", ""),
+                    price=item.get("price", 0),
+                    status=item.get("status", "On Time"),
+                    gate=item.get("gate", "A1"),
+                    terminal=item.get("terminal", "T1"),
+                    seat_rows=item.get("seats", {}).get("rows", 12),
+                    seat_cols=item.get("seats", {}).get("cols", 6),
+                )
+                flight.set_booked_seats(item.get("seats", {}).get("booked", []))
+                flight.set_amenities(item.get("amenities", []))
+                db.session.add(flight)
+
+        # Seed bookings
+        if Booking.query.count() == 0:
+            bookings_data = _load_json(BOOKINGS_FILE, {"bookings": []}).get("bookings", [])
+            for item in bookings_data:
+                booking = Booking(
+                    pnr=item.get("pnr"),
+                    flight_id=item.get("flight_id", ""),
+                    fullname=item.get("fullname", ""),
+                    email=item.get("email", ""),
+                    phone=item.get("phone", ""),
+                    amount=item.get("amount", 0),
+                    status=item.get("status", "PENDING"),
+                    created_at=item.get("created_at", datetime.datetime.now().strftime("%d-%m-%Y %H:%M")),
+                )
+                booking.set_seats(item.get("seats", []))
+                db.session.add(booking)
+
+        # Ensure an admin user exists
+        if not User.query.filter_by(username="admin").first():
+            admin_user = User(username="admin", password=ADMIN_PASS, role="admin")
+            db.session.add(admin_user)
+
+        db.session.commit()
+
+# Initialize at import time so each Render dyno boots a ready DB
+initialize_database_if_needed()
+
 # ------------------ Database Utilities ------------------
 def find_flight(fid):
     """Find a flight by ID"""
@@ -1273,4 +1336,5 @@ def api_documentation():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
